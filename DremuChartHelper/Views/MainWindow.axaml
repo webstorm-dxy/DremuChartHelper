@@ -1,0 +1,56 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DremuChartHelper.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ic="using:FluentAvalonia.FluentIcons"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DremuChartHelper.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="DremuChartHelper"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="PreferSystemChrome"
+        ExtendClientAreaTitleBarHeightHint="40">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    
+    <Panel>
+        <Grid>
+            <TitleBar IsHitTestVisible="True" Height="40" VerticalAlignment="Top" ZIndex="9999"/>
+
+            <ExperimentalAcrylicBorder IsHitTestVisible="True">
+                <ExperimentalAcrylicBorder.Material>
+                    <ExperimentalAcrylicMaterial
+                        BackgroundSource="Digger"
+                        TintColor="White"
+                        TintOpacity="1"
+                        MaterialOpacity="0.65" />
+                </ExperimentalAcrylicBorder.Material>
+            </ExperimentalAcrylicBorder>
+
+            <ui:NavigationView x:Name="nvSample"
+                               PaneDisplayMode="Left"
+                               ItemInvoked="OnItemInvoked"
+                               IsHitTestVisible="True"
+                               OpenPaneLength="240"
+                               Margin="0,40,0,0">
+                <ui:NavigationView.MenuItems>
+                    <ui:NavigationViewItem Content="项目管理器" IconSource="{ic:FluentIconSource Home12Regular}" Tag="ProjectManager" IsSelected="True"/>
+                    <ui:NavigationViewItem Content="曲线编辑器" IconSource="{ic:FluentIconSource CubeArrowCurveDown20Regular}" Tag="CurveEditor" />
+                </ui:NavigationView.MenuItems>
+
+                <!-- 放置 Frame 用于承载页面内容 -->
+                <ui:Frame x:Name="contentFrame"/>
+            </ui:NavigationView>
+        </Grid>
+    </Panel>
+
+</Window>

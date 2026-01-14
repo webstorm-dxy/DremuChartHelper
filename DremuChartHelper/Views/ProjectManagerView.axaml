@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DremuChartHelper.ViewModels"
+             xmlns:ui="using:FluentAvalonia.FluentIcons"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DremuChartHelper.Views.ProjectManagerView"
+             x:DataType="vm:ProjectManagerViewModel">
+
+    <Design.DataContext>
+        <vm:ProjectManagerViewModel/>
+    </Design.DataContext>
+
+    <Grid>
+        <!-- 三个主要操作按钮 -->
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top">
+            <Button Width="150" Height="60" FontSize="18" Margin="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <ui:FluentIcon Icon="Add12Regular" Width="24" Height="24" VerticalAlignment="Center"/>
+                    <TextBlock Text="新建项目" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Width="150" Height="60" FontSize="18" Margin="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <ui:FluentIcon Icon="FolderOpen24Regular" Width="24" Height="24" VerticalAlignment="Center"/>
+                    <TextBlock Text="打开项目" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <Button Width="150" Height="60" FontSize="18" Margin="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <ui:FluentIcon Icon="Clock12Regular" Width="24" Height="24" VerticalAlignment="Center"/>
+                    <TextBlock Text="最近项目" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <ScrollViewer Width="850" Height="850">
+                <StackPanel x:Name="ProjectListPanel">
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
+    </Grid>
+
+</UserControl>
