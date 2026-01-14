@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using DremuChartHelper.Models;
 
 namespace DremuChartHelper.Models.DataManager;
 
 public class RecentProjectData
 {
-    public List<Dictionary<string,Dictionary<string,string>>> Projects { get; set; } = new();
+    public List<ProjectInfo> Projects { get; set; } = new();
 }
 
 public class RecentProjectDataManager

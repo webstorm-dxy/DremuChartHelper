@@ -14,7 +14,9 @@
         Background="Transparent"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="PreferSystemChrome"
-        ExtendClientAreaTitleBarHeightHint="40">
+        ExtendClientAreaTitleBarHeightHint="40"
+        MinHeight="900" 
+        MinWidth="1200">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -25,7 +27,7 @@
     <Panel>
         <Grid>
             <TitleBar IsHitTestVisible="True" Height="40" VerticalAlignment="Top" ZIndex="9999"/>
-
+            
             <ExperimentalAcrylicBorder IsHitTestVisible="True">
                 <ExperimentalAcrylicBorder.Material>
                     <ExperimentalAcrylicMaterial
