@@ -11,13 +11,13 @@
              x:DataType="vm:ProjectManagerViewModel">
 
     <Design.DataContext>
-        <vm:ProjectManagerViewModel/>
+        <vm:ProjectManagerViewModel />
     </Design.DataContext>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- 三个主要操作按钮 -->
@@ -25,63 +25,74 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     Margin="0,20,0,20">
-            <Button Width="150" Height="60" FontSize="18" Margin="10">
+            <Button Width="150" Height="60" FontSize="18" Margin="10" Command="{Binding CreateProjectCommand}">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <ic:FluentIcon Icon="Add12Regular" Width="24" Height="24" VerticalAlignment="Center"/>
-                    <TextBlock Text="新建项目" VerticalAlignment="Center"/>
+                    <ic:FluentIcon Icon="Add12Regular" Width="24" Height="24" VerticalAlignment="Center" />
+                    <TextBlock Text="新建项目" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
             <Button Width="150" Height="60" FontSize="18" Margin="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <ic:FluentIcon Icon="FolderOpen24Regular" Width="24" Height="24" VerticalAlignment="Center"/>
-                    <TextBlock Text="打开项目" VerticalAlignment="Center"/>
+                    <ic:FluentIcon Icon="FolderOpen24Regular" Width="24" Height="24" VerticalAlignment="Center" />
+                    <TextBlock Text="打开项目" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
             <Button Width="150" Height="60" FontSize="18" Margin="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <ic:FluentIcon Icon="ArrowImport20Regular" Width="24" Height="24" VerticalAlignment="Center"/>
-                    <TextBlock Text="外部项目" VerticalAlignment="Center"/>
+                    <ic:FluentIcon Icon="ArrowImport20Regular" Width="24" Height="24" VerticalAlignment="Center" />
+                    <TextBlock Text="外部项目" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
         </StackPanel>
 
         <!-- 项目列表 -->
-        <ScrollViewer Grid.Row="1" HorizontalAlignment="Center" Width="850">
-            <ItemsControl ItemsSource="{Binding Projects}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="models:ProjectInfo">
-                        <Expander Margin="5">
-                            <Expander.Header>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Name}"
-                                               FontSize="20"
-                                               FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding Path}"
+        <Grid Grid.Row="1">
+            <!-- 空状态提示 -->
+            <TextBlock Text="当前没打开过任何项目"
+                       FontSize="18"
+                       Foreground="Gray"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       IsVisible="{Binding !HasProjects}" />
+
+            <!-- 项目列表 -->
+            <ScrollViewer HorizontalAlignment="Center" Width="850"
+                          IsVisible="{Binding HasProjects}">
+                <ItemsControl ItemsSource="{Binding Projects}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="models:ProjectInfo">
+                            <Expander Margin="5">
+                                <Expander.Header>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="20"
+                                                   FontWeight="Bold" />
+                                        <TextBlock Text="{Binding Path}"
+                                                   FontSize="10"
+                                                   Foreground="Gray" />
+                                    </StackPanel>
+                                </Expander.Header>
+                                <Grid>
+                                    <TextBlock Text="{Binding Bpm, StringFormat='BPM: {0}'}"
                                                FontSize="10"
-                                               Foreground="Gray"/>
-                                </StackPanel>
-                            </Expander.Header>
-                            <Grid>
-                                <TextBlock Text="{Binding Bpm, StringFormat='BPM: {0}'}"
-                                           FontSize="10"
-                                           VerticalAlignment="Center"/>
-                                <StackPanel Orientation="Horizontal"
-                                            HorizontalAlignment="Right">
-                                    <Button Content="编辑"
-                                            Command="{Binding $parent[UserControl].((vm:ProjectManagerViewModel)DataContext).EditProjectCommand}"
-                                            CommandParameter="{Binding}"
-                                            Margin="0,0,10,0"/>
-                                    <Button Content="加载项目"
-                                            Command="{Binding $parent[UserControl].((vm:ProjectManagerViewModel)DataContext).LoadProjectCommand}"
-                                            CommandParameter="{Binding}"
-                                            IsDefault="True"/>
-                                </StackPanel>
-                            </Grid>
-                        </Expander>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                                               VerticalAlignment="Center" />
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Right">
+                                        <Button Content="编辑"
+                                                Command="{Binding $parent[UserControl].((vm:ProjectManagerViewModel)DataContext).EditProjectCommand}"
+                                                CommandParameter="{Binding}"
+                                                Margin="0,0,10,0" />
+                                        <Button Content="加载项目"
+                                                Command="{Binding $parent[UserControl].((vm:ProjectManagerViewModel)DataContext).LoadProjectCommand}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 
 </UserControl>

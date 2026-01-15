@@ -23,6 +23,9 @@ public partial class MainWindow : Window
             case "CurveEditor":
                 contentFrame.Navigate(typeof(CurveEditorView));
                 break;
+            case "ResourceManager":
+                contentFrame.Navigate(typeof(ResourceManagerView));
+                break;
         }
     }
 }

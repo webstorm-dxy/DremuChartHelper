@@ -1,0 +1,106 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:DremuChartHelper.ViewModels"
+        xmlns:ic="using:FluentAvalonia.FluentIcons"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+        x:Class="DremuChartHelper.Views.CreateProjectDialog"
+        x:DataType="vm:CreateProjectDialogViewModel"
+        Title="新建项目"
+        Width="500" Height="480"
+        WindowStartupLocation="CenterOwner"
+        TransparencyLevelHint="AcrylicBlur"
+        ExtendClientAreaToDecorationsHint="True"
+        CanResize="False">
+
+    <Design.DataContext>
+        <vm:CreateProjectDialogViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 标题 -->
+        <TextBlock Grid.Row="0"
+                   Text="创建新项目"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,20" />
+
+        <!-- 表单内容 -->
+        <StackPanel Grid.Row="1" Spacing="15">
+            <!-- 项目名称 -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="项目名称*" FontSize="14" />
+                <TextBox Text="{Binding ProjectName}"
+                         Watermark="输入项目名称" />
+            </StackPanel>
+
+            <!-- BPM -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="BPM*" FontSize="14" />
+                <TextBox Text="{Binding Bpm}"
+                         Watermark="输入 BPM 值" />
+            </StackPanel>
+
+            <!-- 音乐文件路径 -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="音乐文件*" FontSize="14" />
+                <Grid>
+                    <TextBox Text="{Binding MusicFilePath}"
+                             Watermark="选择音乐文件"
+                             IsEnabled="False"
+                             Margin="0,0,90,0" />
+                    <Button HorizontalAlignment="Right"
+                            Width="80"
+                            Command="{Binding SelectMusicFileCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <ic:FluentIcon Icon="DocumentSearch24Regular" Width="16" Height="16" />
+                            <TextBlock Text="浏览" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </StackPanel>
+
+            <!-- 项目路径 -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="项目路径*" FontSize="14" />
+                <Grid>
+                    <TextBox Text="{Binding ProjectPath}"
+                             Watermark="选择项目保存位置"
+                             IsEnabled="False"
+                             Margin="0,0,90,0" />
+                    <Button HorizontalAlignment="Right"
+                            Width="80"
+                            Command="{Binding SelectProjectPathCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <ic:FluentIcon Icon="FolderOpen24Regular" Width="16" Height="16" />
+                            <TextBlock Text="浏览" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- 按钮 -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0"
+                    Spacing="10">
+            <Button Content="取消"
+                    Width="100"
+                    Command="{Binding CancelCommand}" />
+            <Button Content="创建"
+                    Width="100"
+                    Command="{Binding ConfirmCommand}"
+                    Classes="Accent" />
+        </StackPanel>
+    </Grid>
+
+</Window>

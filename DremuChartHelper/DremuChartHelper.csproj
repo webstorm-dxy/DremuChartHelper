@@ -30,5 +30,8 @@
       <Compile Update="Views\ProjectManagerView.axaml.cs">
         <DependentUpon>ProjectManagerView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\CreateProjectDialog.axaml.cs">
+        <DependentUpon>CreateProjectDialog.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>
