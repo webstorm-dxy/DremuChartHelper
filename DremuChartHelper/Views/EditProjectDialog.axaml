@@ -1,0 +1,84 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:DremuChartHelper.ViewModels"
+        xmlns:ic="using:FluentAvalonia.FluentIcons"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="380"
+        x:Class="DremuChartHelper.Views.EditProjectDialog"
+        x:DataType="vm:EditProjectDialogViewModel"
+        Title="编辑项目"
+        Width="500" Height="380"
+        WindowStartupLocation="CenterOwner"
+        TransparencyLevelHint="AcrylicBlur"
+        ExtendClientAreaToDecorationsHint="True"
+        CanResize="False">
+
+    <Design.DataContext>
+        <vm:EditProjectDialogViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 标题 -->
+        <TextBlock Grid.Row="0"
+                   Text="编辑项目"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   Margin="0,0,0,20" />
+
+        <!-- 表单内容 -->
+        <StackPanel Grid.Row="1" Spacing="15">
+            <!-- 项目名称 -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="项目名称*" FontSize="14" />
+                <TextBox Text="{Binding ProjectName}"
+                         Watermark="输入项目名称" />
+            </StackPanel>
+
+            <!-- BPM -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="BPM*" FontSize="14" />
+                <TextBox Text="{Binding Bpm}"
+                         Watermark="输入 BPM 值" />
+            </StackPanel>
+
+            <!-- 音乐文件路径（只读显示） -->
+            <!-- <StackPanel Spacing="5"> -->
+            <!--     <TextBlock Text="音乐文件" FontSize="14" /> -->
+            <!--     <TextBox Text="{Binding MusicFilePath}" -->
+            <!--              IsEnabled="False" -->
+            <!--              Opacity="0.7" /> -->
+            <!-- </StackPanel> -->
+
+            <!-- 项目路径（只读显示） -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="项目路径" FontSize="14" />
+                <TextBox Text="{Binding ProjectPath}"
+                         IsEnabled="False"
+                         Opacity="0.7" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- 按钮 -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0"
+                    Spacing="10">
+            <Button Content="取消"
+                    Width="100"
+                    Command="{Binding CancelCommand}" />
+            <Button Content="保存"
+                    Width="100"
+                    Command="{Binding ConfirmCommand}"
+                    Classes="Accent" />
+        </StackPanel>
+    </Grid>
+
+</Window>

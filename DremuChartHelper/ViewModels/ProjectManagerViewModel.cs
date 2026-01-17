@@ -47,15 +47,40 @@ public partial class ProjectManagerViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void EditProject(ProjectInfo project)
+    private async Task EditProjectAsync(ProjectInfo project)
     {
-        // TODO: Implement edit project logic
+        // 获取主窗口作为对话框的父窗口
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+            desktop.MainWindow is not Window mainWindow)
+            return;
+
+        var dialog = new EditProjectDialog { Project = project };
+        var result = await dialog.ShowDialog<object>(mainWindow);
+
+        if (result != null)
+        {
+            // 使用 dynamic 获取匿名对象的属性
+            dynamic dynamicResult = result;
+
+            // 更新项目信息
+            project.Name = dynamicResult.ProjectName;
+            project.Bpm = dynamicResult.Bpm;
+            // Path 不需要修改，所以不更新
+
+            // 刷新项目列表显示（通过触发属性更改通知）
+            OnPropertyChanged(nameof(Projects));
+
+            // 保存到数据管理器
+            var data = new RecentProjectData { Projects = Projects.ToList() };
+            await _manager.SaveDataAsync(data);
+        }
     }
 
     [RelayCommand]
     private void LoadProject(ProjectInfo project)
     {
         // TODO: Implement load project logic
+        
     }
 
     [RelayCommand]
