@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DremuChartHelper", "DremuChartHelper\DremuChartHelper.csproj", "{C5506DA0-8F79-4C52-BCDD-3FB99F3250A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GorgeStudio", "GorgeStudio\GorgeStudio.csproj", "{9B01C910-3638-4396-B290-7AF7FC7C90A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{C5506DA0-8F79-4C52-BCDD-3FB99F3250A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5506DA0-8F79-4C52-BCDD-3FB99F3250A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5506DA0-8F79-4C52-BCDD-3FB99F3250A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B01C910-3638-4396-B290-7AF7FC7C90A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B01C910-3638-4396-B290-7AF7FC7C90A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B01C910-3638-4396-B290-7AF7FC7C90A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B01C910-3638-4396-B290-7AF7FC7C90A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

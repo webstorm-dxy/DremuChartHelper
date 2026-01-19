@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="using:DremuChartHelper.ViewModels"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DremuChartHelper.Views.CurveEditorView"
              x:DataType="viewModels:CurveEditorViewModel">
@@ -13,6 +14,13 @@
     <Grid>
         <!-- 示例内容 -->
         <TextBlock Text="曲线编辑器" FontSize="24" FontWeight="Bold"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                   HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <ui:TabView>
+            <ui:TabViewItem Header="曲线管理"
+                            IsClosable="False">
+                <TextBlock Text="曲线管理" FontSize="24" FontWeight="Bold"
+                           HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            </ui:TabViewItem>
+        </ui:TabView>
     </Grid>
 </UserControl>
