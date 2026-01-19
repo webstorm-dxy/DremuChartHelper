@@ -41,8 +41,4 @@
     <ItemGroup>
       <ProjectReference Include="..\GorgeStudio\GorgeStudio.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\GorgeLinker\" />
-    </ItemGroup>
 </Project>
