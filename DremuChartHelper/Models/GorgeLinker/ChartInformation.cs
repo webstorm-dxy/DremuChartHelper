@@ -10,7 +10,7 @@ public class ChartInformation
     public string ErrorMessage { get; set; } = string.Empty;
     public bool IsLoading { get; set; } = true;
 
-    public int StavesLength;
+    public StaffInformation[] Staves;
     
     public ChartInformation()
     {
@@ -33,7 +33,7 @@ public class ChartInformation
             }
 
             // 在 UI 线程上处理数据
-            StavesLength = scoreInformation.Staves.Length;
+            Staves = scoreInformation.Staves;
 
             // TODO: 将数据绑定到属性供 View 使用
             // 例如：ScoreInformation = scoreInformation;

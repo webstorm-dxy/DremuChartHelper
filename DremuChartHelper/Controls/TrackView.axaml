@@ -1,0 +1,175 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="using:DremuChartHelper.ViewModels"
+             xmlns:models="using:DremuChartHelper.Models.Track"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="400"
+             x:Class="DremuChartHelper.Controls.TrackView"
+             x:DataType="viewModels:TimelineViewModel">
+
+    <Design.DataContext>
+        <viewModels:TimelineViewModel />
+    </Design.DataContext>
+
+    <Grid Background="#F5F5F5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="3000" />
+            
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!-- 轨道头部 -->
+        <ItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Tracks}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="models:TimelineTrack">
+                    <Border Background="#F0F0F0"
+                            BorderBrush="#E0E0E0"
+                            BorderThickness="0,0,1,1"
+                            Height="{Binding Height}"
+                            MinHeight="40">
+                        <Grid Margin="8,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Ellipse Width="12" Height="12"
+                                     Fill="{Binding Color}"
+                                     VerticalAlignment="Center" />
+
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Name}"
+                                       Foreground="#333333"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       Margin="8,0" />
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                                <Button Width="24" Height="24"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="0">
+
+                                </Button>
+                                <Button Width="24" Height="24"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="0">
+
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <!-- 时间轴标尺 -->
+        <Border Grid.Row="0"
+                Grid.Column="1"
+                Background="#FFFFFF"
+                BorderBrush="#E0E0E0"
+                BorderThickness="0,0,0,1">
+            <Grid>
+                <ItemsControl ItemsSource="{Binding Ticks}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="{Binding Width}">
+                                <Border BorderBrush="#D0D0D0"
+                                        BorderThickness="0,0,1,0"
+                                        Height="20"
+                                        VerticalAlignment="Top" />
+                                <TextBlock Text="{Binding Label}"
+                                           FontSize="10"
+                                           Foreground="#666666"
+                                           Margin="0,5,0,0" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Border>
+
+        <!-- 轨道列表 - 使用统一滚动 -->
+        <ScrollViewer Grid.Column="1" Grid.Row="1"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <!-- <ColumnDefinition Width="200"/> -->
+                    <ColumnDefinition Width="3000" />
+                </Grid.ColumnDefinitions>
+
+
+                <!-- 轨道内容 -->
+                <ItemsControl Grid.Column="0" ItemsSource="{Binding Tracks}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="models:TimelineTrack">
+                            <Border Background="#FFFFFF"
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="0,0,0,1"
+                                    Height="{Binding Height}"
+                                    MinHeight="40">
+                                <Canvas Width="3000" Height="{Binding Height}">
+                                    <!-- 测试元素 -->
+                                    <Border Background="Red"
+                                            Canvas.Left="0" Canvas.Top="10"
+                                            Width="100" Height="30" />
+
+                                    <!-- 片段列表 -->
+                                    <ItemsControl ItemsSource="{Binding Clips}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <Canvas />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="models:TrackClip">
+                                                <Border Background="{Binding Color}"
+                                                        BorderBrush="#CCCCCC"
+                                                        BorderThickness="2"
+                                                        CornerRadius="3"
+                                                        Canvas.Left="{Binding PixelLeft}"
+                                                        Canvas.Top="4"
+                                                        Width="{Binding PixelWidth}"
+                                                        Height="{Binding PixelHeight}"
+                                                        Cursor="Hand">
+                                                    <TextBlock Text="{Binding Name}"
+                                                               Foreground="White"
+                                                               FontSize="11"
+                                                               FontWeight="Bold"
+                                                               Margin="8,6"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Canvas>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -67,6 +67,11 @@ public class RemoteFunction
     {
         return await CallJsonRpcAsync<ScoreInformation>("getScoreInformation");
     }
+    
+    public async Task<ElementInformation> GetElementInformationAsync(string staffName, string periodName)
+    {
+        return await CallJsonRpcAsync<ElementInformation>("getElementInformation", new { staffName, periodName });
+    }
 }
 
 public class JsonRpcResponse<T>

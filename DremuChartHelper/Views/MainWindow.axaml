@@ -27,7 +27,7 @@
     <Panel>
         <Grid>
             <TitleBar IsHitTestVisible="True" Height="40" VerticalAlignment="Top" ZIndex="9999"/>
-            
+
             <ExperimentalAcrylicBorder IsHitTestVisible="True">
                 <ExperimentalAcrylicBorder.Material>
                     <ExperimentalAcrylicMaterial
@@ -38,21 +38,27 @@
                 </ExperimentalAcrylicBorder.Material>
             </ExperimentalAcrylicBorder>
 
-            <ui:NavigationView x:Name="nvSample"
-                               PaneDisplayMode="Left"
-                               ItemInvoked="OnItemInvoked"
-                               IsHitTestVisible="True"
-                               OpenPaneLength="240"
-                               Margin="0,40,0,0">
-                <ui:NavigationView.MenuItems>
-                    <ui:NavigationViewItem Content="项目管理器" IconSource="{ic:FluentIconSource Home12Regular}" Tag="ProjectManager" IsSelected="True"/>
-                    <ui:NavigationViewItem Content="谱面资源管理器" IconSource="{ic:FluentIconSource SoundSource20Regular}" Tag="ResourceManager" />
-                    <ui:NavigationViewItem Content="曲线编辑器" IconSource="{ic:FluentIconSource CubeArrowCurveDown20Regular}" Tag="CurveEditor" />
-                </ui:NavigationView.MenuItems>
+            <Grid RowDefinitions="40,Auto,*">
+                <!-- 顶部菜单栏 -->
+                <Menu Grid.Row="1" HorizontalAlignment="Left" Margin="10,5,0,5">
+                    <MenuItem Header="同步谱面" Command="{Binding SyncCharts}"/>
+                </Menu>
 
-                <!-- 放置 Frame 用于承载页面内容 -->
-                <ui:Frame x:Name="contentFrame"/>
-            </ui:NavigationView>
+                <ui:NavigationView Grid.Row="2" x:Name="nvSample"
+                                   PaneDisplayMode="Left"
+                                   ItemInvoked="OnItemInvoked"
+                                   IsHitTestVisible="True"
+                                   OpenPaneLength="240">
+                    <ui:NavigationView.MenuItems>
+                        <ui:NavigationViewItem Content="项目管理器" IconSource="{ic:FluentIconSource Home12Regular}" Tag="ProjectManager" IsSelected="True"/>
+                        <ui:NavigationViewItem Content="谱面资源管理器" IconSource="{ic:FluentIconSource SoundSource20Regular}" Tag="ResourceManager" />
+                        <ui:NavigationViewItem Content="曲线编辑器" IconSource="{ic:FluentIconSource CubeArrowCurveDown20Regular}" Tag="CurveEditor" />
+                    </ui:NavigationView.MenuItems>
+
+                    <!-- 放置 Frame 用于承载页面内容 -->
+                    <ui:Frame x:Name="contentFrame"/>
+                </ui:NavigationView>
+            </Grid>
         </Grid>
     </Panel>
 

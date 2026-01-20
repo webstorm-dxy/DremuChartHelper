@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="using:DremuChartHelper.ViewModels"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:controls="using:DremuChartHelper.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DremuChartHelper.Views.CurveEditorView"
              x:DataType="viewModels:CurveEditorViewModel">
@@ -12,14 +13,30 @@
     </Design.DataContext>
 
     <Grid>
-        <!-- 示例内容 -->
-        <TextBlock Text="曲线编辑器" FontSize="24" FontWeight="Bold"
-                   HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Tab View -->
         <ui:TabView>
+            <ui:TabViewItem Header="轨道编辑器"
+                            IsClosable="False">
+                <Grid>
+                    <!-- 轨道视图控件 -->
+                    <controls:TrackView/>
+                </Grid>
+            </ui:TabViewItem>
+
             <ui:TabViewItem Header="曲线管理"
                             IsClosable="False">
-                <TextBlock Text="曲线管理" FontSize="24" FontWeight="Bold"
-                           HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <Grid RowDefinitions="*,Auto">
+                    <TextBlock Grid.Row="0" Text="曲线管理" FontSize="24" FontWeight="Bold"
+                               HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+                    <StackPanel Grid.Row="1" VerticalAlignment="Stretch">
+                    </StackPanel>
+                </Grid>
             </ui:TabViewItem>
         </ui:TabView>
     </Grid>

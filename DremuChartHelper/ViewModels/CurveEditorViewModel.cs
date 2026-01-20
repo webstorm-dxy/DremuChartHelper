@@ -7,12 +7,15 @@ namespace DremuChartHelper.ViewModels;
 
 public partial class CurveEditorViewModel : ViewModelBase
 {
-    private ChartInformation _chartInformation;
+    
 
     // 构造函数保持简单，不进行异步操作
     public CurveEditorViewModel()
     {
-        _chartInformation = new ChartInformation();
+        MainWindowViewModel.SyncChartsAction += () =>
+        {
+            Console.WriteLine("test");
+        };
     }
 
     
