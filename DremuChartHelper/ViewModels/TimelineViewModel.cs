@@ -69,17 +69,17 @@ public partial class TimelineViewModel : ViewModelBase
 
         // 创建几个示例轨道
         var track1 = new TimelineTrack("轨道 1 - 音频", "#E8E8E8");
-        track1.Clips.Add(new TrackClip(0, 5, "前奏", "#4A90E2", zoom));
-        track1.Clips.Add(new TrackClip(6, 8, "主歌", "#50E3C2", zoom));
-        track1.Clips.Add(new TrackClip(15, 10, "副歌", "#B8E986", zoom));
+        track1.Clips.Add(new TrackClip(0, 2, "前奏", "#4A90E2", zoom, Ruler.Bpm, Ruler.BeatsPerBar, Ruler.BeatUnit));
+        track1.Clips.Add(new TrackClip(4, 4, "主歌", "#50E3C2", zoom, Ruler.Bpm, Ruler.BeatsPerBar, Ruler.BeatUnit));
+        track1.Clips.Add(new TrackClip(10, 6, "副歌", "#B8E986", zoom, Ruler.Bpm, Ruler.BeatsPerBar, Ruler.BeatUnit));
 
         var track2 = new TimelineTrack("轨道 2 - 旋律", "#E8E8E8");
-        track2.Clips.Add(new TrackClip(2, 12, "主旋律", "#E94B3C", zoom));
-        track2.Clips.Add(new TrackClip(20, 6, "间奏", "#F5A623", zoom));
+        track2.Clips.Add(new TrackClip(2, 6, "主旋律", "#E94B3C", zoom, Ruler.Bpm, Ruler.BeatsPerBar, Ruler.BeatUnit));
+        track2.Clips.Add(new TrackClip(14, 3, "间奏", "#F5A623", zoom, Ruler.Bpm, Ruler.BeatsPerBar, Ruler.BeatUnit));
 
         var track3 = new TimelineTrack("轨道 3 - 和声", "#E8E8E8");
-        track3.Clips.Add(new TrackClip(8, 10, "和声1", "#9013FE", zoom));
-        track3.Clips.Add(new TrackClip(25, 5, "和声2", "#BD10E0", zoom));
+        track3.Clips.Add(new TrackClip(6, 4, "和声1", "#9013FE", zoom, Ruler.Bpm, Ruler.BeatsPerBar, Ruler.BeatUnit));
+        track3.Clips.Add(new TrackClip(18, 2, "和声2", "#BD10E0", zoom, Ruler.Bpm, Ruler.BeatsPerBar, Ruler.BeatUnit));
 
         Tracks.Add(track1);
         Tracks.Add(track2);
@@ -111,17 +111,24 @@ public partial class TimelineViewModel : ViewModelBase
         Ticks.Clear();
         GridLines.Clear();
 
-        var tickInterval = Ruler.LargeTickInterval;
+        var tickInterval = Ruler.SecondsPerBar; // 每小节一个大刻度
         var pixelPerSecond = Ruler.ZoomLevel;
 
         for (double t = 0; t <= Ruler.TotalDuration; t += tickInterval)
         {
             var position = t * pixelPerSecond;
+            var musicTime = MusicTimeConverter.SecondsToMusicTime(
+                t,
+                Ruler.Bpm,
+                Ruler.BeatsPerBar,
+                Ruler.BeatUnit
+            );
+
             Ticks.Add(new TickMark
             {
                 Position = position,
                 Width = tickInterval * pixelPerSecond,
-                Label = $"{t:F1}s"
+                Label = musicTime.ToString()
             });
 
             GridLines.Add(new TickMark

@@ -36,4 +36,29 @@ public partial class TimelineRuler : ObservableObject
     /// 大刻度间隔（秒）
     /// </summary>
     public double LargeTickInterval => 5.0;
+
+    /// <summary>
+    /// BPM（每分钟拍数）
+    /// </summary>
+    [ObservableProperty] private int _bpm = 120;
+
+    /// <summary>
+    /// 拍号分子（每小节拍数）
+    /// </summary>
+    [ObservableProperty] private int _beatsPerBar = 4;
+
+    /// <summary>
+    /// 拍号分母（音符类型，4=四分音符）
+    /// </summary>
+    [ObservableProperty] private int _beatUnit = 4;
+
+    /// <summary>
+    /// 每拍时长（秒）
+    /// </summary>
+    public double SecondsPerBeat => 60.0 / Bpm;
+
+    /// <summary>
+    /// 每小节时长（秒）
+    /// </summary>
+    public double SecondsPerBar => SecondsPerBeat * BeatsPerBar;
 }
