@@ -20,14 +20,7 @@
 
         <!-- Tab View -->
         <ui:TabView>
-            <ui:TabViewItem Header="轨道编辑器"
-                            IsClosable="False">
-                <Grid>
-                    <!-- 轨道视图控件 -->
-                    <controls:TrackView/>
-                </Grid>
-            </ui:TabViewItem>
-
+            <!-- 暂时移除时间线功能，目前采用检索曲线 -->
             <ui:TabViewItem Header="曲线管理"
                             IsClosable="False">
                 <Grid RowDefinitions="*,Auto">
