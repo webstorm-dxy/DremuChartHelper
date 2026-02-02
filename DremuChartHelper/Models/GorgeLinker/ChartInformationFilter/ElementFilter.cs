@@ -3,22 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DremuChartHelper.Models.GorgeLinker;
+using DremuChartHelper.Models.GorgeLinker.Filters;
+using DremuChartHelper.Models.GorgeLinker.Repositories;
+using DremuChartHelper.Models.GorgeLinker.Services;
 using DremuChartHelper.ViewModels;
 using GorgeStudio.GorgeStudioServer;
 
 namespace DremuChartHelper.Models.GorgeLinker.ChartInformationFilter;
 
+/// <summary>
+/// 元素过滤器基类 - 兼容层
+/// 保留原有接口以支持现有代码，内部使用重构后的新架构
+/// </summary>
 public class ElementFilter
 {
-    protected ElementInformation[] Elements { get; set; }
+    protected ElementInformation[] Elements { get; set; } = Array.Empty<ElementInformation>();
 
-    private static readonly object _eventLock = new();
+    private static readonly object EventLock = new();
     private static bool _isEventRegistered = false;
 
     /// <summary>
     /// 存储所有 ElementFilter 及其子类的实例
     /// </summary>
-    private static readonly List<ElementFilter> _filters = new();
+    private static readonly List<ElementFilter> Filters = new();
+
+    /// <summary>
+    /// 新架构的过滤器管理器（懒加载）
+    /// </summary>
+    private static FilterManager? _filterManager;
+
+    /// <summary>
+    /// 新架构的仓储（懒加载）
+    /// </summary>
+    private static IChartRepository? _repository;
+
+    /// <summary>
+    /// 新架构的服务（懒加载）
+    /// </summary>
+    private static IChartDataService? _chartDataService;
 
     public ElementFilter()
     {
@@ -28,23 +50,30 @@ public class ElementFilter
 
     private void RegisterFilter()
     {
-        lock (_eventLock)
+        lock (EventLock)
         {
-            _filters.Add(this);
-            Console.WriteLine($"注册过滤器: {this.GetType().Name} (当前共 {_filters.Count} 个过滤器)");
+            Filters.Add(this);
+            Console.WriteLine($"注册过滤器: {this.GetType().Name} (当前共 {Filters.Count} 个过滤器)");
+
+            // 如果这个实例实现了新接口，也注册到新管理器中
+            if (this is IElementFilter elementFilter)
+            {
+                EnsureNewArchitectureInitialized();
+                _filterManager!.RegisterFilter(elementFilter);
+            }
         }
     }
 
     private void RegisterSyncEvent()
     {
-        lock (_eventLock)
+        lock (EventLock)
         {
             if (_isEventRegistered)
             {
                 return;
             }
 
-            MainWindowViewModel.SyncChartsAction += async () =>
+            MainWindowViewModel.SyncChartsAction += async void () =>
             {
                 try
                 {
@@ -53,8 +82,7 @@ public class ElementFilter
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"无法获取铺面信息:\n{e.Message}");
-                    // TODO: 更好的错误处理机制
+                    Console.WriteLine($"无法获取谱面信息:\n{e.Message}");
                 }
             };
 
@@ -64,9 +92,9 @@ public class ElementFilter
 
     private async Task LoadAllFiltersAsync()
     {
-        Console.WriteLine($"正在为 {_filters.Count} 个过滤器加载数据...");
+        Console.WriteLine($"正在为 {Filters.Count} 个过滤器加载数据...");
 
-        foreach (var filter in _filters)
+        foreach (var filter in Filters)
         {
             await filter.LoadPeriodInformationsAsync();
         }
@@ -93,7 +121,9 @@ public class ElementFilter
         {
             foreach (var period in information.Periods)
             {
-                Elements = await RemoteFunction.Instance.Value.GetPeriodElements(information.ClassName, period.MethodName);
+                // 使用新的仓储
+                EnsureNewArchitectureInitialized();
+                Elements = await _repository!.GetPeriodElementsAsync(information.ClassName, period.MethodName);
             }
         }
 
@@ -101,6 +131,27 @@ public class ElementFilter
 
         // 在元素加载完成后调用虚方法，让子类可以处理
         OnElementsLoaded();
+    }
+
+    /// <summary>
+    /// 确保新架构已初始化
+    /// </summary>
+    private static void EnsureNewArchitectureInitialized()
+    {
+        if (_repository == null)
+        {
+            _repository = new GorgeStudioChartRepository();
+        }
+
+        if (_chartDataService == null)
+        {
+            _chartDataService = new ChartDataService(_repository);
+        }
+
+        if (_filterManager == null)
+        {
+            _filterManager = new FilterManager(_repository, _chartDataService);
+        }
     }
 
     /// <summary>

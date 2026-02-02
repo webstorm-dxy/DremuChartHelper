@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="using:DremuChartHelper.ViewModels"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:controls="using:DremuChartHelper.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DremuChartHelper.Views.CurveEditorView"
              x:DataType="viewModels:CurveEditorViewModel">

@@ -1,29 +1,43 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using DremuChartHelper.Models.GorgeLinker.Filters;
 using GorgeStudio.GorgeStudioServer;
 
 namespace DremuChartHelper.Models.GorgeLinker.ChartInformationFilter;
 
-public class JudgementLineFilter : ElementFilter
+/// <summary>
+/// 判定线过滤器 - 具体策略实现
+/// 过滤和处理判定线元素（Dremu.DremuMainLane）
+/// </summary>
+public class JudgementLineFilter : ElementFilterBase
 {
-    protected ElementInformation[] JudgementLineElements { get; private set; }
-
     /// <summary>
-    /// 在元素加载完成后调用，过滤判定线元素
+    /// 过滤后的判定线元素
     /// </summary>
-    protected override void OnElementsLoaded()
+    public ElementInformation[] JudgementLineElements { get; private set; } = Array.Empty<ElementInformation>();
+
+    public override string Name => "JudgementLineFilter";
+
+    public override bool ShouldProcess(ElementInformation element)
     {
-        if (Elements == null || Elements.Length == 0)
+        // 只处理判定线元素
+        return element.ClassName == "Dremu.DremuMainLane";
+    }
+
+    public override Task ProcessElementsAsync(ElementInformation[] elements)
+    {
+        if (elements == null || elements.Length == 0)
         {
-            Console.WriteLine("警告: Elements 为空或未加载");
+            Console.WriteLine("[$$$警告: Elements 为空或未加载");
             JudgementLineElements = Array.Empty<ElementInformation>();
-            return;
+            return Task.CompletedTask;
         }
 
-        JudgementLineElements = Elements
-            .Where(element => element.ClassName == "Dremu.DremuMainLane")
-            .ToArray();
+        JudgementLineElements = elements;
 
-        Console.Out.WriteLine($"找到 {JudgementLineElements.Length} 个判定线元素");
+        Console.WriteLine($"[{Name}] 找到 {JudgementLineElements.Length} 个判定线元素");
+
+        return Task.CompletedTask;
     }
 }
