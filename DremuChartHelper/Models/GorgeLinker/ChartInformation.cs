@@ -1,22 +1,40 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using DremuChartHelper.ViewModels;
 using GorgeStudio.GorgeStudioServer;
 
 namespace DremuChartHelper.Models.GorgeLinker;
 
 public class ChartInformation
 {
-    
+
     public string ErrorMessage { get; set; } = string.Empty;
     public bool IsLoading { get; set; } = true;
 
-    public StaffInformation[] Staves;
-    
-    public ChartInformation()
+    public StaffInformation[]? Staves;
+
+    public static readonly Lazy<ChartInformation> Instance = new(() => new ChartInformation());
+
+    private Task? _initializationTask;
+
+    private ChartInformation()
     {
-        _ = InitializeAsync();
+        _initializationTask = InitializeAsync();
+        MainWindowViewModel.SyncChartsAction += UpdateChartInformation;
     }
-    
+
+    public void UpdateChartInformation()
+    {
+        _initializationTask = InitializeAsync();
+        GC.Collect();
+    }
+
+    public Task EnsureInitializedAsync()
+    {
+        return _initializationTask ?? Task.CompletedTask;
+    }
+
     private async Task InitializeAsync()
     {
         try
@@ -34,7 +52,14 @@ public class ChartInformation
 
             // 在 UI 线程上处理数据
             Staves = scoreInformation.Staves;
-
+            
+            var dremuStarffNames = from information in Staves where information.Form == "Dremu" select information.ClassName;
+            var dremuPeriods = from staffInformation in Staves where staffInformation.Form == "Dremu" select staffInformation.Periods;
+            var elements = await remoteFunction.GetPeriodElements(dremuStarffNames.First(), dremuPeriods.First().First().MethodName);
+            var tap = from elementInformation in elements
+                where elementInformation.ClassName == "Dremu.DremuTap"
+                select elementInformation;
+            Console.Out.WriteLine($"{tap}");
             // TODO: 将数据绑定到属性供 View 使用
             // 例如：ScoreInformation = scoreInformation;
         }
