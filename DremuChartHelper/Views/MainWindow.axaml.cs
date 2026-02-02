@@ -1,5 +1,6 @@
 using System;
 using Avalonia.Controls;
+using DremuChartHelper.ViewModels;
 using FluentAvalonia.UI.Controls;
 
 namespace DremuChartHelper.Views;
@@ -10,6 +11,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         contentFrame.Navigate(typeof(ProjectManagerView));
+        DataContext = new MainWindowViewModel();
     }
     
     private void OnItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)

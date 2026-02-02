@@ -10,6 +10,8 @@ namespace GorgeStudio.GorgeStudioServer;
 
 public class RemoteFunction
 {
+    public static readonly Lazy<RemoteFunction> Instance = new(() => new RemoteFunction());
+    
     private readonly HttpClient _httpClient;
 
     private const string Url = "http://localhost:14324";
@@ -26,7 +28,7 @@ public class RemoteFunction
     {
         using StringContent jsonContent = new(
             JsonSerializer.Serialize(new
-                { jsonrpc = "2.0", method,parameters, id = 1 }),Encoding.UTF8,"application/json");
+                { jsonrpc = "2.0", method,@params = parameters, id = 1 }),Encoding.UTF8,"application/json");
 
         // 添加 ConfigureAwait(false) 避免捕获同步上下文
         using HttpResponseMessage httpResponse = await _httpClient.PostAsync(Url, jsonContent)
@@ -38,7 +40,7 @@ public class RemoteFunction
         var jsonResponse = await httpResponse.Content.ReadAsStringAsync()
             .ConfigureAwait(false);
 
-        Console.WriteLine(jsonResponse);
+        // Console.WriteLine("\n"+jsonResponse);
 
         var rpcResponse = JsonSerializer.Deserialize<JsonRpcResponse<T>>(jsonResponse);
 
@@ -67,10 +69,11 @@ public class RemoteFunction
     {
         return await CallJsonRpcAsync<ScoreInformation>("getScoreInformation");
     }
-    
-    public async Task<ElementInformation> GetElementInformationAsync(string staffName, string periodName)
+
+    public async Task<ElementInformation[]> GetPeriodElements(string staffName, string periodName)
     {
-        return await CallJsonRpcAsync<ElementInformation>("getElementInformation", new { staffName, periodName });
+        
+        return await CallJsonRpcAsync<ElementInformation[]>("getPeriodElements", new {staffName, periodName});
     }
 }
 
