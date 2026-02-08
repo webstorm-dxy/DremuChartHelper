@@ -24,11 +24,6 @@ public partial class CreateProjectDialogViewModel : ViewModelBase
     [ObservableProperty]
     private string _projectPath = string.Empty;
 
-    public CreateProjectDialogViewModel()
-    {
-        throw new Exception("Error");
-    }
-
     public CreateProjectDialogViewModel(Window window)
     {
         _window = window;

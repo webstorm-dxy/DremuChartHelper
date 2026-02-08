@@ -1,6 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using DremuChartHelper.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DremuChartHelper.Views;
 
@@ -9,5 +9,6 @@ public partial class ResourceManagerView : UserControl
     public ResourceManagerView()
     {
         InitializeComponent();
+        DataContext = App.ServiceProvider?.GetRequiredService<ResourceManagerViewModel>();
     }
 }

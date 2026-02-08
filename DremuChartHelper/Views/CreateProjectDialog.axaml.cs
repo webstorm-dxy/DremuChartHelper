@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using DremuChartHelper.ViewModels;
 
 namespace DremuChartHelper.Views;

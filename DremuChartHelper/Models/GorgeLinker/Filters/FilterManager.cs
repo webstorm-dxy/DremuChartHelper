@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using DremuChartHelper.Models.GorgeLinker.Repositories;
 using DremuChartHelper.Models.GorgeLinker.Services;
 using GorgeStudio.GorgeStudioServer;
@@ -15,16 +16,20 @@ public class FilterManager
 {
     private readonly IChartRepository _repository;
     private readonly IChartDataService _chartDataService;
-    private readonly System.Collections.Generic.List<IElementFilter> _filters;
+    private readonly List<IElementFilter> _filters;
 
-    /// <summary>
-    /// 构造函数 - 通过依赖注入接收依赖
-    /// </summary>
-    public FilterManager(IChartRepository repository, IChartDataService chartDataService)
+    public FilterManager(
+        IChartRepository repository,
+        IChartDataService chartDataService,
+        IEnumerable<IElementFilter> filters)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _chartDataService = chartDataService ?? throw new ArgumentNullException(nameof(chartDataService));
-        _filters = new System.Collections.Generic.List<IElementFilter>();
+        _filters = new List<IElementFilter>();
+        if (filters != null)
+        {
+            _filters.AddRange(filters);
+        }
 
         // 订阅数据更新事件
         _chartDataService.ChartDataUpdated += OnChartDataUpdated;

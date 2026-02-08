@@ -1,14 +1,12 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
 using DremuChartHelper.Models;
-using DremuChartHelper.Models.Repositories;
 using DremuChartHelper.Models.Services;
 using DremuChartHelper.Views;
 
@@ -26,23 +24,6 @@ public partial class ProjectManagerViewModel : ViewModelBase
 
     public bool HasProjects => Projects.Count > 0;
 
-    public ProjectManagerViewModel()
-    {
-        // 向后兼容：创建服务实例
-        var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var appFolder = System.IO.Path.Combine(appDataPath, "DremuChartHelper");
-        var filePath = System.IO.Path.Combine(appFolder, "editor_data.json");
-
-        var repository = new ProjectJsonRepository(filePath);
-        _projectService = new ProjectService(repository);
-
-        Projects.CollectionChanged += OnProjectsChanged;
-        _ = LoadProjectsAsync();
-    }
-
-    /// <summary>
-    /// 构造函数 - 支持依赖注入
-    /// </summary>
     public ProjectManagerViewModel(IProjectService projectService)
     {
         _projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
@@ -126,7 +107,6 @@ public partial class ProjectManagerViewModel : ViewModelBase
             return;
 
         var dialog = new CreateProjectDialog();
-        dialog.DataContext = new CreateProjectDialogViewModel(dialog);
 
         var result = await dialog.ShowDialog<object>(mainWindow);
 

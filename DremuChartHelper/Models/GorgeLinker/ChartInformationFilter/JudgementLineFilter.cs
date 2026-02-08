@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DremuChartHelper.Models.GorgeLinker.Filters;
 using GorgeStudio.GorgeStudioServer;
 
-namespace DremuChartHelper.Models.GorgeLinker.ChartInformationFilter;
+namespace DremuChartHelper.Models.GorgeLinker.Filters;
 
 /// <summary>
 /// 判定线过滤器 - 具体策略实现

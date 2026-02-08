@@ -23,11 +23,6 @@ public partial class EditProjectDialogViewModel : ViewModelBase
     [ObservableProperty]
     private string _projectPath = string.Empty;
 
-    public EditProjectDialogViewModel()
-    {
-        throw new Exception("Error");
-    }
-
     public EditProjectDialogViewModel(Window window, ProjectInfo project)
     {
         _window = window;

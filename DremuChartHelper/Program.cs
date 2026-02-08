@@ -13,7 +13,7 @@ sealed class Program
     {
         // 注册编码提供程序以支持 Ionic.Zip (DotNetZip) 需要的 IBM437 等编码
         System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
+        Console.WriteLine("输出正常");
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
     }

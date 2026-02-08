@@ -71,6 +71,7 @@ public partial class ChartDataService : ObservableObject, IChartDataService
         {
             IsLoading = true;
             ErrorMessage = string.Empty;
+            Console.WriteLine("开始初始化谱面数据");
 
             var scoreInformation = await _repository.GetScoreInformationAsync();
 

@@ -1,9 +1,6 @@
-using System;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using DremuChartHelper.ViewModels;
-using GorgeStudio.GorgeStudioServer;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DremuChartHelper.Views;
 
@@ -12,6 +9,6 @@ public partial class CurveEditorView : UserControl
     public CurveEditorView()
     {
         InitializeComponent();
-        DataContext = new CurveEditorViewModel();
+        DataContext = App.ServiceProvider?.GetRequiredService<CurveEditorViewModel>();
     }
 }

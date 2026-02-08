@@ -8,6 +8,7 @@ using Avalonia.Markup.Xaml;
 using DremuChartHelper.ViewModels;
 using DremuChartHelper.Views;
 using DremuChartHelper.Configuration;
+using DremuChartHelper.Models.GorgeLinker.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DremuChartHelper;
@@ -22,11 +23,12 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-
+        
         // 配置依赖注入
         var services = new ServiceCollection();
         services.ConfigureAppServices();
         ServiceProvider = services.BuildServiceProvider();
+        ServiceProvider.GetRequiredService<FilterManager>();
     }
 
     public override void OnFrameworkInitializationCompleted()

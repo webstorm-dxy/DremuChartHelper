@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using DremuChartHelper.Models.GorgeLinker.Filters;
@@ -21,23 +20,25 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection AddGorgeLinkerServices(
         this IServiceCollection services,
-        string serverUrl = "http://localhost:14324")
+        string? serverUrl = null)
     {
+        serverUrl ??= Environment.GetEnvironmentVariable("DREMU_SERVER_URL") ?? "http://localhost:14324";
         // 仓储
         services.AddSingleton<IChartRepository>(sp => new GorgeStudioChartRepository(serverUrl));
 
         // 领域服务
         services.AddSingleton<IChartDataService, ChartDataService>();
 
-        // 过滤器管理器
-        services.AddSingleton<FilterManager>();
+        // 注册具体过滤器
+        services.AddSingleton<IElementFilter, JudgementLineFilter>();
 
-        // 注册默认过滤器
-        services.AddSingleton<IEnumerable<IElementFilter>>(sp =>
+        // 过滤器管理器，注入所有过滤器
+        services.AddSingleton<FilterManager>(sp =>
         {
-            var filters = new List<IElementFilter>();
-            // 可以在这里添加默认过滤器
-            return filters;
+            var repo = sp.GetRequiredService<IChartRepository>();
+            var chartService = sp.GetRequiredService<IChartDataService>();
+            var filters = sp.GetServices<IElementFilter>();
+            return new FilterManager(repo, chartService, filters);
         });
 
         return services;
@@ -69,8 +70,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<ProjectManagerViewModel>();
-        services.AddTransient<CreateProjectDialogViewModel>();
-        services.AddTransient<EditProjectDialogViewModel>();
         services.AddTransient<ResourceManagerViewModel>();
         services.AddTransient<CurveEditorViewModel>();
 
@@ -82,7 +81,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     public static IServiceCollection ConfigureAppServices(
         this IServiceCollection services,
-        string gorgeStudioUrl = "http://localhost:14324")
+        string? gorgeStudioUrl = null)
     {
         services.AddGorgeLinkerServices(gorgeStudioUrl);
         services.AddProjectServices();
