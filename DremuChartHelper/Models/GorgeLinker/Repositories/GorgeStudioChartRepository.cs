@@ -1,10 +1,7 @@
 using System;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using GorgeStudio.GorgeStudioServer;
 
@@ -23,10 +20,10 @@ public class GorgeStudioChartRepository : IChartRepository
     /// 构造函数
     /// </summary>
     /// <param name="serverUrl">GorgeStudio 服务器 URL，默认为 localhost:14324</param>
-    public GorgeStudioChartRepository(string serverUrl = "http://localhost:14324")
+    public GorgeStudioChartRepository(string serverUrl = "http://localhost:14324", HttpClient? httpClient = null)
     {
         _serverUrl = serverUrl ?? throw new ArgumentNullException(nameof(serverUrl));
-        _httpClient = new HttpClient
+        _httpClient = httpClient ?? new HttpClient
         {
             Timeout = TimeSpan.FromSeconds(10)
         };
@@ -91,29 +88,4 @@ public class GorgeStudioChartRepository : IChartRepository
 
         return rpcResponse.Result;
     }
-}
-
-/// <summary>
-/// JSON-RPC 响应格式
-/// </summary>
-public class JsonRpcResponse<T>
-{
-    [JsonPropertyName("result")]
-    public T? Result { get; set; }
-
-    [JsonPropertyName("error")]
-    public JsonRpcError? Error { get; set; }
-
-    [JsonPropertyName("id")]
-    public object? Id { get; set; }
-}
-
-/// <summary>
-/// JSON-RPC 错误格式
-/// </summary>
-public class JsonRpcError
-{
-    public int Code { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public object? Data { get; set; }
 }

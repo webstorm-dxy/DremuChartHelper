@@ -1,12 +1,12 @@
 # DremuChartHelper
 
-DremuChartHelper is a Windows desktop application built with Avalonia UI for creating and manipulating musical rhythm game charts. It uses .NET 9.0 with the MVVM architectural pattern and integrates with GorgeStudio (a separate server application) for chart data.
+DremuChartHelper is a Windows desktop application built with Avalonia UI for creating and manipulating musical rhythm game charts. It uses .NET 9.0 with the MVVM architectural pattern and integrates with a GorgeStudio server via the built-in GorgeLinker JSON-RPC client.
 
 ## Solution Structure
 
 The solution contains two projects:
 - **DremuChartHelper** - Main Avalonia UI application
-- **GorgeStudio** - Service library providing JSON-RPC client for GorgeStudio integration
+- **DremuChartHelper.Tests** - xUnit test project
 
 ## Build and Run Commands
 
@@ -48,20 +48,20 @@ Views and ViewModels are automatically connected via `ViewLocator.cs`:
 - **Avalonia UI** (11.3.10): Cross-platform UI framework
 - **FluentAvaloniaUI** (2.4.1): Fluent design system components
 - **CommunityToolkit.Mvvm** (8.2.1): MVVM helpers with source generators
-- **System.Text.Json**: JSON serialization for GorgeStudio communication
+- **System.Text.Json**: JSON serialization for GorgeStudio server communication
 
 ## GorgeStudio Integration
 
-The application communicates with GorgeStudio server via JSON-RPC protocol:
+The application communicates with the GorgeStudio server via JSON-RPC protocol:
 
 ### Remote Function Client
-- **Location**: `GorgeStudio/GorgeStudioServer/RemoteFunction.cs`
+- **Location**: `DremuChartHelper/Models/GorgeLinker/GorgeStudioServer.cs`
 - **Endpoint**: `http://localhost:14324`
 - **Protocol**: JSON-RPC 2.0
 - **Pattern**: Singleton via `RemoteFunction.Instance.Value`
 
 ### Data Models
-- **Location**: `GorgeStudio/GorgeStudioServer/DataModel.cs`
+- **Location**: `DremuChartHelper/Models/GorgeLinker/GorgeStudioServer.cs`
 - Defines contract for:
   - `ScoreInformation` - Contains chart metadata and `Staves` array
   - `StaffInformation` - Represents individual chart sections
@@ -72,55 +72,48 @@ The application communicates with GorgeStudio server via JSON-RPC protocol:
 ```
 GorgeStudio Server (localhost:14324)
   ↓ JSON-RPC
-RemoteFunction.GetScoreInformationAsync()
+GorgeStudioChartRepository.GetScoreInformationAsync()
   ↓
-ChartInformation.InitializeAsync()
+ChartDataService.EnsureInitializedAsync()
   ↓
-ChartInformation.Staves populated
+ChartDataService.Staves populated
   ↓
-Filters process data via SyncChartsAction
+FilterManager processes data via ChartDataUpdated event
 ```
 
 ## Singleton Pattern Usage
 
-Several singletons are used throughout the application:
-
-### ChartInformation
-- **Location**: `Models/GorgeLinker/ChartInformation.cs`
-- **Access**: `ChartInformation.Instance.Value`
-- **Purpose**: Global chart data cache with async initialization
-- **Key Method**: `EnsureInitializedAsync()` - Ensures data is loaded before access
-
-### RemoteFunction
-- **Access**: `RemoteFunction.Instance.Value`
-- **Purpose**: JSON-RPC client for GorgeStudio communication
+RemoteFunction is available as a singleton via `RemoteFunction.Instance.Value` for direct JSON-RPC usage.
 
 ## Filter Pattern
 
-Chart data processing uses a filter-based architecture in `Models/GorgeLinker/ChartInformationFilter/`:
+Chart data processing uses a filter-based architecture in `Models/GorgeLinker/Filters/` and `Models/GorgeLinker/ChartInformationFilter/`:
 
-### ElementFilter (Base Class)
-- **Purpose**: Base filter for element processing
+### ElementFilterBase
+- **Purpose**: Base filter contract for element processing
 - **Key Members**:
-  - `Elements` - Protected array storing loaded elements
-  - `LoadPeriodInformationsAsync()` - Loads elements from GorgeStudio
-  - `OnElementsLoaded()` - Virtual method called after loading (override in subclasses)
-- **Event Registration**: Uses static lock to ensure `SyncChartsAction` is only registered once
-- **Thread Safety**: Static event registration prevents duplicate handlers
+  - `ShouldProcess()` - Filter strategy
+  - `ProcessElementsAsync()` - Element handling entry point
 
 ### JudgementLineFilter (Example Implementation)
 - **Purpose**: Filters judgement line elements from loaded data
-- **Inherits**: `ElementFilter`
-- **Override**: `OnElementsLoaded()` to filter `Dremu.DremuMainLane` elements
+- **Inherits**: `ElementFilterBase`
+- **Override**: `ShouldProcess()` to filter `Dremu.DremuMainLane` elements
 
 ### Creating New Filters
 ```csharp
-public class MyFilter : ElementFilter
+public class MyFilter : ElementFilterBase
 {
-    protected override void OnElementsLoaded()
+    public override string Name => "MyFilter";
+
+    public override bool ShouldProcess(ElementInformation element)
     {
-        // Elements is now populated and safe to access
-        var filtered = Elements.Where(e => e.ClassName == "SomeType").ToArray();
+        return element.ClassName == "SomeType";
+    }
+
+    public override Task ProcessElementsAsync(ElementInformation[] elements)
+    {
+        return Task.CompletedTask;
     }
 }
 ```
@@ -130,8 +123,8 @@ public class MyFilter : ElementFilter
 ### Race Condition Prevention
 When working with asynchronously loaded data:
 
-1. **Always use `EnsureInitializedAsync()`** before accessing `ChartInformation.Staves`
-2. **Never access `Elements` in constructors** of filter classes - use `OnElementsLoaded()` instead
+1. **Always use `EnsureInitializedAsync()`** before accessing `IChartDataService.GetStaves()`
+2. **Never do work in filter constructors** - use `ProcessElementsAsync()` after data arrives
 3. **Never use `.Result` or `.Wait()`** on async methods in UI code - causes deadlocks
 
 ### Example Correct Pattern
@@ -139,16 +132,15 @@ When working with asynchronously loaded data:
 // In ViewModels or other code needing chart data
 public async Task LoadData()
 {
-    var chartInfo = ChartInformation.Instance.Value;
-    await chartInfo.EnsureInitializedAsync();
+    await _chartDataService.EnsureInitializedAsync();
+    var staves = _chartDataService.GetStaves();
 
-    if (chartInfo.Staves == null)
+    if (staves == null)
     {
         // Handle error
         return;
     }
-
-    // Safe to use Staves
+    // Safe to use staves
 }
 ```
 
@@ -167,10 +159,11 @@ public async Task LoadData()
 DremuChartHelper/
 ├── Models/
 │   ├── DataManager/           # Project and recent file management
-│   ├── GorgeLinker/          # GorgeStudio integration
-│   │   ├── ChartInformation.cs      # Main data model
-│   │   └── ChartInformationFilter/  # Data processing filters
-│   └── Track/                # Timeline and track system
+│   ├── GorgeLinker/          # GorgeLinker integration
+│   │   ├── Filters/          # Filter pipeline
+│   │   ├── Repositories/     # JSON-RPC repository
+│   │   ├── Services/         # Chart data services
+│   │   └── GorgeStudioServer.cs # JSON-RPC contracts and client
 ├── ViewModels/               # MVVM ViewModels
 ├── Views/                    # Avalonia XAML views
 └── Controls/                 # Custom UI controls
